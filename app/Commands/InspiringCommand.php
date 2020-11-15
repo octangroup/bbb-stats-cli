@@ -28,6 +28,7 @@ class InspiringCommand extends Command
      */
     public function handle()
     {
+
         $this->info('Simplicity is the ultimate sophistication.');
     }
 

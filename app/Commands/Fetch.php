@@ -4,6 +4,7 @@ namespace App\Commands;
 
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
+use App\Models\Meeting;
 
 class Fetch extends Command
 {
@@ -12,7 +13,7 @@ class Fetch extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'fetch {name=artisan}';
 
     /**
      * The description of the command.
@@ -28,7 +29,12 @@ class Fetch extends Command
      */
     public function handle()
     {
-        //
+        $meeting  = new Meeting();
+        $meeting->name = $this->argument('name');
+        $meeting->save();
+
+        $this->info($meeting);
+        $this->info(Meeting::count());
     }
 
     /**
