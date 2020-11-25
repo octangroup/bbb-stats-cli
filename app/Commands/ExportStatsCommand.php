@@ -39,16 +39,29 @@ class ExportStatsCommand extends Command
 
             $array = json_decode($json, true);
             $collection  = collect($array);
+            $users = collect();
+
+            foreach($collection['event'] as $event){
+                if($event['@attributes']['eventname'] == 'ParticipantJoinEvent'){
+                    $users->push($event['userId']);
+                }
+               
+            }
+
+            $groupedUsers = $users->mapToGroups(function ($item, $key) {
+                return [$item];
+            });
 
             $events_number = count($collection['event']);
 
             $meeting = Meeting::firstOrNew([
                 'meeting_id' => $collection['meeting']['@attributes']['id']
             ]);
+            
             $meeting->meeting_name = $collection['meeting']['@attributes']['name'];
             $meeting->origin = $collection['metadata']['@attributes']['bbb-origin'];
             $meeting->server_name = $collection['metadata']['@attributes']['bbb-origin-server-name'];
-            $meeting->users = 1;
+            $meeting->users = $groupedUsers->count();
             $meeting->start_date = date('Y-m-d H:i:s', $collection['event'][0]['timestampUTC']/1000);
             $meeting->end_date = date('Y-m-d H:i:s', $collection['event'][$events_number - 1]['timestampUTC']/1000);
             $meeting->save();
