@@ -14,7 +14,7 @@ class ExportStatsCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'export:stats';
+    protected $signature = 'export';
 
     /**
      * The description of the command.
@@ -57,7 +57,7 @@ class ExportStatsCommand extends Command
             $meeting = Meeting::firstOrNew([
                 'meeting_id' => $collection['meeting']['@attributes']['id']
             ]);
-            
+
             $meeting->meeting_name = $collection['meeting']['@attributes']['name'];
             $meeting->origin = $collection['metadata']['@attributes']['bbb-origin'];
             $meeting->server_name = $collection['metadata']['@attributes']['bbb-origin-server-name'];
